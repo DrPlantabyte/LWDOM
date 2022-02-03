@@ -1,0 +1,1 @@
+-d build/javadoc --module-source-path modules/*/src --module net.plantabyte.lwdom

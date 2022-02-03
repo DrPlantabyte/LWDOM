@@ -16,10 +16,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 */
 package net.plantabyte.lwdom;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -514,12 +511,21 @@ public abstract class LWDNode {
 	public static boolean isValidIdentifier(String name){
 		if(name == null) return false;
 		char first = name.charAt(0);
-		if(!(first == '_' || Character.isLetter(first))) return false;
-		if(name.toLowerCase(Locale.ENGLISH).startsWith("xml")) return false;
-		for(int i = 1; i < name.length(); i++){
-			if(Character.isWhitespace(name.charAt(i))) return false;
+		if(!(Character.isLetter(first) || first == '_' || first == ':')) return false;
+		int numCodepoints = name.codePointCount(0, name.length());
+		int i = 0;
+		while(i < name.length()){
+			char c = name.charAt(i);
+			int codepoint = name.codePointAt(i);
+			if(!(c == '.' || c == '-' || c == '_' || c == ':'
+					|| Character.isLetterOrDigit(codepoint)
+					|| Character.isAlphabetic(codepoint)
+					|| Character.isIdeographic(codepoint)
+			)) return false;
+			i += Character.charCount(codepoint);
 		}
 		return true;
 	}
+	
 }
 
